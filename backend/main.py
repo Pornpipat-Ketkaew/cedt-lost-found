@@ -40,7 +40,7 @@ def get_post(post_id: int, db: Session = Depends(get_db)):
 def mark_returned(post_id: int, db: Session = Depends(get_db)):
     post = db.get(Post, post_id)
     if post is None:
-        raise HTTPException(status_code=404, deteil="Post not found")
+        raise HTTPException(status_code=404, detail="Post not found")
     post.status = "returned"
     db.commit()
     db.refresh(post)
