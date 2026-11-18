@@ -24,7 +24,6 @@ def create_post(data: PostCreate, db: Session = Depends(get_db)):
     db.refresh(post)
     return post
 
-
 @app.get("/posts", response_model=list[PostOut])
 def list_posts(db: Session = Depends(get_db)):
     return db.scalars(select(Post).order_by(Post.created_at.desc())).all()
@@ -35,4 +34,14 @@ def get_post(post_id: int, db: Session = Depends(get_db)):
     post = db.get(Post, post_id)
     if post is None:
         raise HTTPException(status_code=404, detail="Post not found")
+    return post
+
+@app.patch("/posts/{post_id}/returned", response_model=PostOut)
+def mark_returned(post_id: int, db: Session = Depends(get_db)):
+    post = db.get(Post, post_id)
+    if post is None:
+        raise HTTPException(status_code=404, deteil="Post not found")
+    post.status = "returned"
+    db.commit()
+    db.refresh(post)
     return post
